@@ -5,7 +5,7 @@ source "$THIS_DIR/bin/public/group-of/_.sh"
 # ===    Gets the GPID of process id
 # ===    and uses that to print a tree.
 # ===    If no GPID found, then PID is used.
-tree () {
+family-tree () {
   local +x PID="$1"; shift
   local +x GPID="$(group-of $PID || :)"
 
