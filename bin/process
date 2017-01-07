@@ -13,6 +13,8 @@ fi
 
 set -u -e -o pipefail
 
+PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
+
 case $action in
   help|--help|-h)
     mksh_setup print-help $0 "$@"
