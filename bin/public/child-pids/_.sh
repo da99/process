@@ -4,7 +4,7 @@
 # ===   You can then get info on each PID using xargs:
 # ===   Any other way, and you will get sub-processes/sub-shells.
 # ===   Example:  {{CMD}} | xargs ...     # ==> Prints out PIDs of xargs
-# ===   Example:  while ... done < <({{CMD}}) # ==> Prints out PIDs of '<(bash_setup ...)'
+# ===   Example:  while ... done < <({{CMD}}) # ==> Prints out PIDs of '<(my_bash ...)'
 child-pids () {
     target="$1"
     shift
