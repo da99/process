@@ -6,26 +6,17 @@ top-cpu () {
   local +x MIN_CPU="$1"; shift
   local +x SECONDS="$1"; shift
 
-  local +x IFS=$'\n'
-  local +x CACHE="$THIS_DIR"/progs/top-cpu
-  mkdir -p "$CACHE"
-
-  local +x COUNT="1"
-
-  # IF max has been reached, reset.
-  if [[ -f "$CACHE/${SECONDS}.txt" ]]; then
-    rm -f "$CACHE"/*.txt
+  if [[ "$SECONDS" -lt 1 || "$SECONDS" -gt 20 ]]; then
+    echo "!!! Invalid seconds: $SECONDS" >&2
+    exit 2
   fi
 
-  # FIND next iteration:
-  while [[ "$COUNT" -lt "$SECONDS" ]]; do
-    if [[ ! -f "$CACHE/${COUNT}.txt" ]]; then
-      break
-    fi
-    COUNT="$((COUNT + 1))"
-  done
+  local +x IFS=$'\n'
+  local +x CACHE="$THIS_DIR"/tmp/top-cpu
+  mkdir -p "$CACHE"
 
-  local +x CONTENT=""
+  local +x RECORD="$(refresh-cache "$CACHE" $SECONDS)"
+
   for LINE in $(ps aux --no-headers | sort -nrk 3,3 | tr -s ' ' | head -n 10 | cut -d' ' -f2,3,11); do
     IFS=$' '
     set $LINE
@@ -38,12 +29,42 @@ top-cpu () {
       continue
     fi
 
-    if [[ -z "$CONTENT" ]]; then
-      CONTENT+="$CMD"
-    else
-      CONTENT+="\n$CMD"
+    echo "$3" >> "$RECORD"
+  done
+
+  IFS=$' '
+  cat "$CACHE"/* | sort | uniq -c | tr -s ' ' | cut -d' ' -f2,3 | while read -r COUNT NAME; do
+    if [[ "$COUNT" -ge "$SECONDS" ]]; then
+      basename "$NAME"
+    fi
+  done
+} # === end function
+
+refresh-cache () {
+  local +x CACHE="$1"; shift
+  local +x MAX="$1"; shift
+  local +x NOW="$(date +"%s")"
+
+  local +x IFS=$'\n'
+  for FILE in $(find "$CACHE" -mindepth 1 -maxdepth 1 -type f); do
+    if [[ ! -e "$FILE" ]]; then
+      continue
+    fi
+    local +x AGE="$(stat --format="%Y" "$FILE")"
+    if [[ "$(( NOW - AGE ))" -gt "$MAX" ]]; then
+      rm -f "$FILE"
     fi
   done
 
-  echo -e "$CONTENT" | sort | uniq > "$CACHE/${COUNT}.txt"
-} # === end function
+  local +x COUNT="0"
+  while [[ "$COUNT" -lt "$MAX" ]] ; do
+    COUNT="$(( COUNT + 1 ))"
+    if [[ ! -e "$CACHE"/$COUNT ]] ; then
+      echo "$CACHE"/$COUNT
+      return 0
+    fi
+  done
+
+  echo "$CACHE"/1
+} # refresh-cache
+
