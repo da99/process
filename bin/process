@@ -2,7 +2,7 @@
 #
 #
 THE_ARGS="$@"
-THIS_DIR="$(dirname "$(dirname "$0")")"
+THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
 if [[ -z "$@" ]]; then
   action="watch"
@@ -22,6 +22,7 @@ case $action in
 
   *)
 
+    mkdir -p "$THIS_DIR"/tmp
     FUNC_FILE="$THIS_DIR/bin/public/${action}/_.sh"
 
     if [[ -s  "$FUNC_FILE"  ]]; then
