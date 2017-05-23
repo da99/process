@@ -12,7 +12,7 @@ top-cpu () {
   fi
 
   local +x IFS=$'\n'
-  local +x CACHE="$THIS_DIR"/tmp/top-cpu
+  local +x CACHE="$THIS_DIR/tmp/top-cpu/${MIN_CPU}.$SECONDS"
   mkdir -p "$CACHE"
 
   local +x RECORD="$(refresh-cache "$CACHE" $SECONDS)"
@@ -46,13 +46,14 @@ refresh-cache () {
   local +x MAX="$1"; shift
   local +x NOW="$(date +"%s")"
 
+  local +x FILE_MAX="$(( MAX + 1 ))"
   local +x IFS=$'\n'
   for FILE in $(find "$CACHE" -mindepth 1 -maxdepth 1 -type f); do
     if [[ ! -e "$FILE" ]]; then
       continue
     fi
     local +x AGE="$(stat --format="%Y" "$FILE")"
-    if [[ "$(( NOW - AGE ))" -gt "$MAX" ]]; then
+    if [[ "$(( NOW - AGE ))" -gt "$FILE_MAX" ]]; then
       rm -f "$FILE"
     fi
   done
