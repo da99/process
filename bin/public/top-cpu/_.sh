@@ -18,6 +18,7 @@ top-cpu () {
   local +x RECORD="$(refresh-cache "$CACHE" $SECONDS)"
   touch "$RECORD"
 
+  local +x INSPECT="$THIS_DIR/tmp/inspect.txt"
   for LINE in $(ps aux --no-headers | sort -nrk 3,3 | tr -s ' ' | head -n 10 | cut -d' ' -f2,3,11); do
     IFS=$' '
     set $LINE
@@ -30,6 +31,7 @@ top-cpu () {
       continue
     fi
 
+    echo "$LINE" >> "$INSPECT"
     echo "$3" >> "$RECORD"
   done
 
