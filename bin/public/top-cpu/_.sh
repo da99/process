@@ -1,8 +1,36 @@
 
+# === {{CMD}}  min-cpu
 # === {{CMD}}  min-cpu  seconds
 # === Lists processes running for more than "seconds"
 # === higher than "min-cpu": {{CMD}} 90 5
 top-cpu () {
+  local +x MIN_CPU="$1"; shift
+  if [[ ! -z "$@" ]]; then
+    top-cpu-with-seconds "$MIN_CPU" "$@"
+    return 0
+  fi
+
+  local +x IFS=$'\n'
+
+  for LINE in $(ps aux --no-headers | sort -nrk 3,3 | tr -s ' ' | head -n 10 | cut -d' ' -f2,3,11); do
+    IFS=$' '
+    set $LINE
+    IFS=$'\n'
+
+    local +x PID=$1
+    local +x CPU=$2
+    local +x CMD=$3
+    if [[ "${CPU%.*}" -lt "$MIN_CPU" ]]; then
+      continue
+    fi
+
+    echo "$CPU $CMD"
+  done | sort --human-numeric-sort -r | cut -d' ' -f2 | awk '!seen[$0]++' | xargs -I NAME basename NAME
+
+
+} # === top-cpu
+
+top-cpu-with-seconds () {
   local +x MIN_CPU="$1"; shift
   local +x SECONDS="$1"; shift
 
