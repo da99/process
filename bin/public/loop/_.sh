@@ -19,6 +19,7 @@ loop () {
       while [[ "$COUNT" -lt "$MAX" ]]; do
         sleep $SLEEP
         COUNT="$((COUNT + 1))"
+        setopt local_options shwordsplit
         $CMD && return 0 || continue
       done
       exit 5
