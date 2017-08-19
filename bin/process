@@ -1,4 +1,4 @@
-#!/usr/bin/env mksh
+#!/usr/bin/env zsh
 #
 #
 THE_ARGS="$@"
@@ -13,11 +13,12 @@ fi
 
 set -u -e -o pipefail
 
+PATH="$PATH:$THIS_DIR/../my_zsh/bin"
 PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
 
 case $action in
   help|--help|-h)
-    mksh_setup print-help $0 "$@"
+    my_zsh print-help $0 "$@"
     ;;
 
   *)
