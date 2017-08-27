@@ -37,10 +37,9 @@ case $action in
       return 0
     fi
 
-    BIN_FILE="$THIS_DIR/bin/lib/${action}.sh"
-    if [[ -s "$BIN_FILE" ]]; then
-      source "$BIN_FILE"
-      "$action" "$@"
+    SH_FILE="$THIS_DIR/sh/${action}/_"
+    if [[ -x "$SH_FILE" ]]; then
+      source "$SH_FILE"
       exit 0
     fi
 

@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+#
+# === {{CMD}}
+#
+set -u -e -o pipefail
+
+local +x ORIGINAL_ARGS="$@"
+local +x ACTION=$1; shift
+
+case "$ACTION" in
+
+  *s)
+    local +x TOTAL="${ACTION%%s}"
+    local +x COUNTER=0
+    while [[ $COUNTER -lt $TOTAL ]] ; do
+      echo -n "."
+      sleep 1
+      COUNTER="$(( COUNTER + 1 ))"
+    done
+    ;;
+
+  *)
+    echo "!!! Invalid option: wait $ORIGINAL_ARGS" >&2
+    exit 1
+    ;;
+
+esac
+
