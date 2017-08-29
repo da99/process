@@ -25,22 +25,23 @@ echo "=== Watching: $args -> $cmd"
 inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | while read -r CHANGE; do
   dir=$(echo "$CHANGE" | cut -d' ' -f 1)
   op=$(echo "$CHANGE" | cut -d' ' -f 2)
-  path="${dir}$(echo "$CHANGE" | cut -d' ' -f 3)"
-  file="$(basename $path)"
+  file_path="${dir}$(echo "$CHANGE" | cut -d' ' -f 3)"
 
-  if [[ ! -f "$path" ]] ; then
+  file="$(basename "$file_path")"
+
+  if [[ ! -f "$file_path" ]] ; then
     # echo -e "\n\n\e[1m=======================================================\e[0m"
     # sh_color ORANGE "=== $CHANGE (Skipping {{non-file}})"
     continue
   fi
 
-  if mksh_setup is-same-file "$path"; then
-    sh_color ORANGE "=== Skipping file {{$path}} ({{hasn't changed}})"
+  if mksh_setup is-same-file "$file_path"; then
+    sh_color ORANGE "=== Skipping file {{$file_path}} ({{hasn't changed}})"
     continue
   fi
 
-  sh_color BOLD "=== {{$path}} - $op - $(date +'%I:%M:%S')"
+  sh_color BOLD "=== {{$file_path}} - $op - $(date +'%I:%M:%S')"
 
-  $cmd || { stat="$?"; sh_color RED "=== {{Failed}}: $stat ($cmd)"; }
+  ${=cmd} || { stat="$?"; sh_color RED "=== {{Failed}}: $stat ($cmd)"; }
 done
 
