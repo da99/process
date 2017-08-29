@@ -1,20 +1,18 @@
 #!/usr/bin/env zsh
 #
 #
-THE_ARGS="$@"
-THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
-
-if [[ -z "$@" ]]; then
-  action="watch"
-else
-  action=$1
-  shift
-fi
-
 set -u -e -o pipefail
+
+local +x THE_ARGS="$@"
+local +x THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
 PATH="$PATH:$THIS_DIR/../my_zsh/bin"
 PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
+
+local +x action=""
+if [[ -n "$@" ]]; then
+  action=$1; shift
+fi
 
 case $action in
   help|--help|-h)
@@ -22,22 +20,16 @@ case $action in
     ;;
 
   *)
-
     mkdir -p "$THIS_DIR"/tmp
-    FUNC_FILE="$THIS_DIR/bin/public/${action}/_.sh"
+    local +x FUNC_FILE="$THIS_DIR/bin/public/${action}/_.sh"
 
     if [[ -s  "$FUNC_FILE"  ]]; then
-
-      export THIS_FILE="$FUNC_FILE"
-      export THIS_FUNC="$action"
-      export THIS_FUNC_DIR="$THIS_DIR/bin/public/${action}"
-
       source "$THIS_FILE"
       "$THIS_FUNC" "$@"
       return 0
     fi
 
-    SH_FILE="$THIS_DIR/sh/${action}/_"
+    local +x SH_FILE="$THIS_DIR/sh/${action}/_"
     if [[ -x "$SH_FILE" ]]; then
       source "$SH_FILE"
       exit 0
