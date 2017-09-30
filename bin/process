@@ -8,6 +8,7 @@ local +x THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
 PATH="$PATH:$THIS_DIR/../my_zsh/bin"
 PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
+PATH="$PATH:$THIS_DIR/../sh_color/bin"
 
 local +x action=""
 if [[ -n "$@" ]]; then
