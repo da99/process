@@ -22,7 +22,7 @@ fi
 # === From an answer by "technosaurus":
 #     http://stackoverflow.com/a/18295696/841803
 echo "=== Watching: $args -> $cmd"
-local +x TREE_FILE="$(mktemp tree.tmp.XXXXXXXXXXX)"
+local +x TREE_FILE="$(mktemp /tmp/tree.tmp.XXXXXXXXXXX)"
 inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | while read -r CHANGE; do
   dir=$(echo "$CHANGE" | cut -d' ' -f 1)
   op=$(echo "$CHANGE" | cut -d' ' -f 2)
