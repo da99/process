@@ -21,8 +21,22 @@ fi
 
 # === From an answer by "technosaurus":
 #     http://stackoverflow.com/a/18295696/841803
+
+# === Setup tree comparison:
+
+dir-as-filename () {
+  echo "${PWD//\//_}"
+}
+save-tree () {
+  tree "$PWD" > "$TREE_FILE"
+}
+
+local +x TREE_FILE="/tmp/is-same-tree/$(dir-as-filename)"
+mkdir -p /tmp/is-same-tree
+save-tree
+mksh_setup is-same-file "$TREE_FILE" || :
+
 echo "=== Watching: $args -> $cmd"
-local +x TREE_FILE="$(mktemp /tmp/tree.tmp.XXXXXXXXXXX)"
 inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | while read -r CHANGE; do
   dir=$(echo "$CHANGE" | cut -d' ' -f 1)
   op=$(echo "$CHANGE" | cut -d' ' -f 2)
@@ -31,19 +45,16 @@ inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | whi
   file="$(basename "$file_path")"
 
   if [[ ! -f "$file_path" ]] ; then
-    # echo -e "\n\n\e[1m=======================================================\e[0m"
-    # sh_color ORANGE "=== $CHANGE (Skipping {{non-file}})"
     continue
   fi
 
-  tree $PWD > "$TREE_FILE"
+  save-tree
   if mksh_setup is-same-file "$file_path" && mksh_setup is-same-file "$TREE_FILE"; then
     sh_color ORANGE "=== Skipping file {{$file_path}} ({{hasn't changed}})"
     continue
   fi
 
   sh_color BOLD "=== {{$file_path}} - $op - $(date +'%I:%M:%S')"
-
   ${=cmd} || { stat="$?"; sh_color RED "=== {{Failed}}: $stat ($cmd)"; }
 done
 
