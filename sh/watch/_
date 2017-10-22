@@ -22,6 +22,7 @@ fi
 # === From an answer by "technosaurus":
 #     http://stackoverflow.com/a/18295696/841803
 echo "=== Watching: $args -> $cmd"
+local +x TREE_FILE="$(mktemp tree.tmp.XXXXXXXXXXX)"
 inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | while read -r CHANGE; do
   dir=$(echo "$CHANGE" | cut -d' ' -f 1)
   op=$(echo "$CHANGE" | cut -d' ' -f 2)
@@ -35,7 +36,8 @@ inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | whi
     continue
   fi
 
-  if mksh_setup is-same-file "$file_path"; then
+  tree $PWD > "$TREE_FILE"
+  if mksh_setup is-same-file "$file_path" && mksh_setup is-same-file "$TREE_FILE"; then
     sh_color ORANGE "=== Skipping file {{$file_path}} ({{hasn't changed}})"
     continue
   fi
