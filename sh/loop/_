@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# === {{CMD}} every SLEEP max X or until MY CMD --ARGS
+# === {{CMD}} every INT max COUNT or until MY CMD --ARGS
 #
 
 local +x origin="$@"
