@@ -14,7 +14,7 @@ top-cpu () {
 
   for LINE in $(ps aux --no-headers | sort -nrk 3,3 | tr -s ' ' | head -n 10 | cut -d' ' -f2,3,11); do
     IFS=$' '
-    set $LINE
+    set ${=LINE}
     IFS=$'\n'
 
     local +x PID=$1
@@ -49,7 +49,7 @@ top-cpu-with-seconds () {
   local +x INSPECT="$THIS_DIR/tmp/inspect.txt"
   for LINE in $(ps aux --no-headers | sort -nrk 3,3 | tr -s ' ' | head -n 10 | cut -d' ' -f2,3,11); do
     IFS=$' '
-    set $LINE
+    set ${=LINE}
     IFS=$'\n'
 
     local +x PID=$1
