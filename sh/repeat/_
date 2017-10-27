@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+#
+# === {{CMD}} NUM cmd -with args
+#
+set -u -e -o pipefail
+
+local +x ORIGINAL_ARGS="$@"
+
+local +x MAX="$1"; shift
+
+
+local +x COUNT=0
+local +x CMD="$@"
+
+while [[ "$COUNT" -lt "$MAX" ]]; do
+  ${=CMD}
+  COUNT="$((COUNT + 1))"
+done
+
