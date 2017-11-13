@@ -16,9 +16,9 @@ case "$(echo $@ | xargs echo -n)" in
     local +x COUNT=0
     setopt local_options shwordsplit
     while [[ "$COUNT" -lt "$MAX" ]]; do
-      echo -n "."
       COUNT="$((COUNT + 1))"
       $CMD && return 0 || :
+      echo -n "."
       sleep $SLEEP
     done
     exit 5
