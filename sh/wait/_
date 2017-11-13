@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# === {{CMD}}
+# === {{CMD}} [NUM]s  # prints dots every second until NUM seconds is reached.
 #
 set -u -e -o pipefail
 
