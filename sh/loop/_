@@ -6,6 +6,25 @@
 local +x origin="$@"
 
 case "$(echo $@ | xargs echo -n)" in
+  "max "*" while "*)
+    shift
+    local +x NUM="$1"; shift
+    shift
+    local +x CMD="$@"
+
+    local +x count=0
+    local +x stat=0
+
+    while [[ "$count" -lt "$NUM" ]] && ${=CMD} ; do
+      count=$((count + 1))
+      sleep 0.5
+    done
+
+    if [[ $count -ge $NUM ]] && ${=CMD}; then
+      return 1
+    fi
+    ;;
+
   "max "*" while not "*)
     shift
     local +x NUM="$1"; shift
