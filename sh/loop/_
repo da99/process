@@ -8,7 +8,8 @@ local +x origin="$@"
 case "$(echo $@ | xargs echo -n)" in
   "max "*" while not "*)
     shift
-    local +x NUM="$1"; shift; shift
+    local +x NUM="$1"; shift
+    shift; shift
     local +x CMD="$@"
 
     local +x count=0
@@ -19,6 +20,7 @@ case "$(echo $@ | xargs echo -n)" in
       sleep 0.5
     done
 
+    set -x
     if [[ $count -ge $NUM ]]; then
       ${=CMD}
     fi
