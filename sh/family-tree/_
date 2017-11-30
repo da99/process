@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 #
 # === {{CMD}} PID|GPID
-# ===    Gets the GPID of process id
-# ===    and uses that to print a tree.
-# ===    If no GPID found, then PID is used.
+# === Gets the GPID of PID.
+# ===   and uses that to print a tree.
+# ===   If no GPID found, then PID is used.
 #
 #
 set -u -e -o pipefail
@@ -18,11 +18,11 @@ case "$ACTION" in
     local +x GPID="$(ps -o pgid= $PID | grep -o '[0-9]*')"
 
     if [[ ! -z "$GPID" ]] && kill -0 $GPID &>/dev/null; then
-      pstree -a -A  -p -g $GPID
+      process tree $GPID
       return
     fi
 
-    pstree -a -A  -p -g $PID
+    process tree $PID
     ;;
 
 esac

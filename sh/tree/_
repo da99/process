@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+#
+# === {{CMD}} PID
+# === Prints tree of process.
+#
+#
+set -u -e -o pipefail
+
+local +x ORIGINAL_ARGS="$@"
+
+local +x ACTION="$1"; shift
+
+case "$ACTION" in
+  *)
+    pstree -a -A  -p -g $ACTION
+    ;;
+
+esac
+
