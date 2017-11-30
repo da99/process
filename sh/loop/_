@@ -20,7 +20,6 @@ case "$(echo $@ | xargs echo -n)" in
       sleep 0.5
     done
 
-    set -x
     if [[ $count -ge $NUM ]]; then
       ${=CMD}
     fi
