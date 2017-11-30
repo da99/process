@@ -1,10 +1,29 @@
 #!/usr/bin/env zsh
 # === {{CMD}} every INT max COUNT or until MY CMD --ARGS
+# === {{CMD}} max INT while not MY CMD ---args
 #
 
 local +x origin="$@"
 
 case "$(echo $@ | xargs echo -n)" in
+  "max "*" while not "*)
+    shift
+    local +x NUM="$1"; shift; shift
+    local +x CMD="$@"
+
+    local +x count=0
+    local +x stat=0
+
+    while [[ "$count" -lt "$NUM" ]] && ! ${=CMD} ; do
+      count=$((count + 1))
+      sleep 0.5
+    done
+
+    if [[ $count -ge $NUM ]]; then
+      ${=CMD}
+    fi
+    ;;
+
   "every "*" max "*" or until "*)
     shift; local +x SLEEP="$1"
     shift; shift; local +x MAX="$1"
