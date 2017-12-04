@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 #
 # === {{CMD}}  "my args to inotifywait"   "my cmd -with -args"
+# === ENV variables given to command: CHANGED_FILE
 if [[ $(pgrep -f -- "$(echo $@)" | wc -l) -gt 3 ]]; then
   echo "!!! Already running: $@" >&2
   exit 1
@@ -19,14 +20,14 @@ then
   exit 1
 fi
 
-# === From an answer by "technosaurus":
+# From an answer by "technosaurus":
 #     http://stackoverflow.com/a/18295696/841803
-
-# === Setup tree comparison:
-
+# Setup tree comparison:
+#
 dir-as-filename () {
   echo "${PWD//\//_}"
 }
+
 save-tree () {
   tree "$PWD" > "$TREE_FILE"
 }
