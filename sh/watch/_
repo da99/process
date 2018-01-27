@@ -38,7 +38,7 @@ save-tree
 mksh_setup is-same-file "$TREE_FILE" || :
 
 echo "=== Watching: $args -> $cmd"
-inotifywait --quiet --monitor --event close_write --exclude .git/ ${=args} | while read -r CHANGE; do
+inotifywait --quiet --monitor --event close_write --exclude ".git/|node_modules/|.node_modules/|.shards|tmp/|shard.lock" ${=args} | while read -r CHANGE; do
   dir=$(echo "$CHANGE" | cut -d' ' -f 1)
   op=$(echo "$CHANGE" | cut -d' ' -f 2)
   file_path="${dir}$(echo "$CHANGE" | cut -d' ' -f 3)"
